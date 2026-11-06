@@ -1,0 +1,31 @@
+<div class="card">
+    <div class="card-image">
+        {% if room.image %}
+        <img src="{{ room.image.url }}" alt="{{ room.name }}">
+        {% else %}
+        <div class="no-image">No image</div>
+        {% endif %}
+    </div>
+
+    <div class="card-body">
+        <h3 class="card-title"><a href="{% url 'room_detail' room.id %}">{{ room.name }}</a></h3>
+        <p class="card-meta">{{ room.room_type.name }} &middot; {{ room.hotel.name }}, {{ room.hotel.city }}</p>
+
+        <div class="card-info">
+            <span class="card-price">${{ room.price }} <small>/ night</small></span>
+            <span class="card-guests">{{ room.max_guests }} guest{{ room.max_guests|pluralize }}</span>
+        </div>
+
+        <div class="card-actions">
+            <a class="button" href="{% url 'room_detail' room.id %}">View room</a>
+
+            <form method="post" action="{% url 'toggle_favorite' room.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="button button-outline">
+                    {% if room.id in favorite_ids %}Saved{% else %}Save{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

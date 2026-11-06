@@ -1,0 +1,75 @@
+{% extends "booking/base.html" %}
+
+{% block title %}Rooms{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Rooms</h1>
+    <p>Filter by room type, price and the dates you want to stay.</p>
+</div>
+
+<div class="filter-box">
+    <form method="get">
+        <p>
+            <label for="room_type">Room type</label>
+            <select name="room_type" id="room_type">
+                <option value="">All types</option>
+                {% for type in room_types %}
+                <option value="{{ type.id }}" {% if type.id|stringformat:"s" == room_type %}selected{% endif %}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="price_from">Min price</label>
+            <input type="number" name="price_from" id="price_from" value="{{ price_from }}" min="0">
+        </p>
+
+        <p>
+            <label for="price_to">Max price</label>
+            <input type="number" name="price_to" id="price_to" value="{{ price_to }}" min="0">
+        </p>
+
+        <p>
+            <label for="check_in">Check-in</label>
+            <input type="date" name="check_in" id="check_in" value="{{ check_in }}">
+        </p>
+
+        <p>
+            <label for="check_out">Check-out</label>
+            <input type="date" name="check_out" id="check_out" value="{{ check_out }}">
+        </p>
+
+        <div class="filter-actions">
+            <button type="submit" class="button">Filter</button>
+            <a class="reset-link" href="{% url 'room_list' %}">Reset</a>
+        </div>
+    </form>
+</div>
+
+{% if check_in and check_out %}
+<p class="result-line">Availability checked for {{ check_in }} to {{ check_out }}.</p>
+{% endif %}
+
+<div class="grid">
+    {% for room in rooms %}
+        {% include "booking/_room_card.html" %}
+    {% empty %}
+    <div class="empty">No rooms found. Try different filters.</div>
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+    {% endif %}
+
+    <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+    <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

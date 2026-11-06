@@ -1,0 +1,30 @@
+{% extends "booking/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Find a room for your next stay</h1>
+    <p>Browse hotels, compare rooms and book your stay in a few clicks.</p>
+    <div class="hero-actions">
+        <a class="button button-light" href="{% url 'room_list' %}">Browse rooms</a>
+        <a class="button button-ghost" href="{% url 'hotel_list' %}">View hotels</a>
+    </div>
+</section>
+
+<div class="section-heading">
+    <div>
+        <h2>{% if has_favorites %}Favorite rooms{% else %}Rooms{% endif %}</h2>
+        <p>{% if has_favorites %}Rooms you saved for later.{% else %}A few rooms from our hotels.{% endif %}</p>
+    </div>
+    <a href="{% url 'room_list' %}">See all rooms</a>
+</div>
+
+<div class="grid">
+    {% for room in rooms %}
+        {% include "booking/_room_card.html" %}
+    {% empty %}
+    <div class="empty">No rooms to show.</div>
+    {% endfor %}
+</div>
+{% endblock %}

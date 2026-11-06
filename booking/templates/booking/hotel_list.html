@@ -1,0 +1,70 @@
+{% extends "booking/base.html" %}
+
+{% block title %}Hotels{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Hotels</h1>
+    <p>Browse all hotels and filter them by city.</p>
+</div>
+
+<div class="filter-box">
+    <form method="get">
+        <p>
+            <label for="city">City</label>
+            <select name="city" id="city">
+                <option value="">All cities</option>
+                {% for item in cities %}
+                <option value="{{ item }}" {% if item == city %}selected{% endif %}>{{ item }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <div class="filter-actions">
+            <button type="submit" class="button">Filter</button>
+            {% if city %}
+            <a class="reset-link" href="{% url 'hotel_list' %}">Reset</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="grid">
+    {% for hotel in hotels %}
+    <div class="card">
+        <div class="card-image">
+            {% if hotel.image %}
+            <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}">
+            {% else %}
+            <div class="no-image">No image</div>
+            {% endif %}
+        </div>
+
+        <div class="card-body">
+            <h3 class="card-title"><a href="{% url 'hotel_detail' hotel.id %}">{{ hotel.name }}</a></h3>
+            <p class="card-meta">{{ hotel.address }}</p>
+
+            <div class="card-actions">
+                <a class="button" href="{% url 'hotel_detail' hotel.id %}">View rooms</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty">No hotels found.</div>
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+    {% endif %}
+
+    <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+    <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

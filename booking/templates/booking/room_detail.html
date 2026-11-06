@@ -1,0 +1,74 @@
+{% extends "booking/base.html" %}
+
+{% block title %}{{ room.name }}{% endblock %}
+
+{% block content %}
+<p class="breadcrumb">
+    <a href="{% url 'room_list' %}">Rooms</a> / {{ room.name }}
+</p>
+
+<div class="room-layout">
+    <div>
+        {% if room.image %}
+        <img class="room-image" src="{{ room.image.url }}" alt="{{ room.name }}">
+        {% endif %}
+
+        <div class="room-info">
+            <h1>{{ room.name }}</h1>
+            <p class="card-meta">{{ room.hotel.name }}, {{ room.hotel.city }}</p>
+
+            <div class="detail-row">
+                <span>Room type</span>
+                <strong>{{ room.room_type.name }}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Maximum guests</span>
+                <strong>{{ room.max_guests }}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Price per night</span>
+                <strong>${{ room.price }}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Hotel</span>
+                <strong>{{ room.hotel.name }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="booking-box">
+        <h3>Book this room</h3>
+        <p>Fill in your details and choose your dates.</p>
+
+        {% for error in errors %}
+        <div class="message error">{{ error }}</div>
+        {% endfor %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="customer_name">Full name</label>
+                <input type="text" name="customer_name" id="customer_name" value="{{ name }}">
+            </div>
+
+            <div class="field">
+                <label for="customer_phone">Phone number</label>
+                <input type="text" name="customer_phone" id="customer_phone" value="{{ phone }}">
+            </div>
+
+            <div class="field">
+                <label for="check_in">Check-in</label>
+                <input type="date" name="check_in" id="check_in" value="{{ check_in }}">
+            </div>
+
+            <div class="field">
+                <label for="check_out">Check-out</label>
+                <input type="date" name="check_out" id="check_out" value="{{ check_out }}">
+            </div>
+
+            <button type="submit" class="button">Book room</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "booking/base.html" %}
+
+{% block title %}Bookings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Booked rooms</h1>
+    <p>All reservations stored in the database.</p>
+</div>
+
+<div class="filter-box">
+    <form method="get">
+        <p>
+            <label for="city">City</label>
+            <select name="city" id="city">
+                <option value="">All cities</option>
+                {% for item in cities %}
+                <option value="{{ item }}" {% if item == city %}selected{% endif %}>{{ item }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <div class="filter-actions">
+            <button type="submit" class="button">Filter</button>
+            {% if city %}
+            <a class="reset-link" href="{% url 'booking_list' %}">Reset</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="table-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Hotel</th>
+                    <th>Room</th>
+                    <th>Guest</th>
+                    <th>Status</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>
+                        {{ booking.room.hotel.name }}<br>
+                        <span class="card-meta">{{ booking.room.hotel.city }}</span>
+                    </td>
+                    <td>
+                        {{ booking.room.name }}<br>
+                        <span class="card-meta">${{ booking.room.price }} / night</span>
+                    </td>
+                    <td>
+                        {{ booking.customer_name }}<br>
+                        <span class="card-meta">{{ booking.customer_phone }}</span>
+                    </td>
+                    <td>
+                        {% if booking.is_confirmed %}
+                        <span class="status">Confirmed</span>
+                        {% else %}
+                        <span class="status pending">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.check_in|date:"Y-m-d" }}</td>
+                    <td>{{ booking.check_out|date:"Y-m-d" }}</td>
+                    <td><strong>${{ booking.total_price }}</strong></td>
+                    <td>
+                        <form method="post" action="{% url 'cancel_booking' booking.id %}" onsubmit="return confirm('Cancel this booking?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit" class="button button-outline button-small">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No bookings found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+    {% endif %}
+
+    <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+    <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

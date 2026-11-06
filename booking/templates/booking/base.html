@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hotel Booking{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="{% url 'home' %}">Hotel Booking</a>
+
+            <nav class="main-nav">
+                <a class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                <a class="{% if request.resolver_match.url_name == 'hotel_list' or request.resolver_match.url_name == 'hotel_detail' %}active{% endif %}" href="{% url 'hotel_list' %}">Hotels</a>
+                <a class="{% if request.resolver_match.url_name == 'room_list' or request.resolver_match.url_name == 'room_detail' %}active{% endif %}" href="{% url 'room_list' %}">Rooms</a>
+                <a class="{% if request.resolver_match.url_name == 'booking_list' %}active{% endif %}" href="{% url 'booking_list' %}">Bookings</a>
+                {% if user.is_authenticated %}
+                <a class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">Profile ({{ user.username }})</a>
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <a class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}" href="{% url 'login' %}">Login</a>
+                <a class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Hotel booking course project</p>
+        </div>
+    </footer>
+</body>
+</html>

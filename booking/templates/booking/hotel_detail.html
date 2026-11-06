@@ -1,0 +1,28 @@
+{% extends "booking/base.html" %}
+
+{% block title %}{{ hotel.name }}{% endblock %}
+
+{% block content %}
+<p class="breadcrumb">
+    <a href="{% url 'hotel_list' %}">Hotels</a> / {{ hotel.name }}
+</p>
+
+<div class="page-header">
+    <h1>{{ hotel.name }}</h1>
+    <p>{{ hotel.address }}, {{ hotel.city }}</p>
+</div>
+
+{% if hotel.image %}
+<img class="hotel-image" src="{{ hotel.image.url }}" alt="{{ hotel.name }}">
+{% endif %}
+
+<h2 class="section-title">Rooms</h2>
+
+<div class="grid">
+    {% for room in hotel.rooms.all %}
+        {% include "booking/_room_card.html" %}
+    {% empty %}
+    <div class="empty">No rooms for this hotel.</div>
+    {% endfor %}
+</div>
+{% endblock %}

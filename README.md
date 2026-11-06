@@ -89,7 +89,7 @@ FinalProject/
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
-├── db.sqlite3                 # local database (ignored by Git)
+├── db.sqlite3
 ├── media/
 │   ├── hotels/
 │   └── rooms/

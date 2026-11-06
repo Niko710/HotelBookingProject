@@ -129,12 +129,3 @@ FinalProject/
     │   └── password_reset_complete.html
     └── static/booking/css/style.css
 ```
-
-## Checks
-
-```bash
-python manage.py check
-python manage.py shell -c "from booking.models import Hotel, Room, Booking; print(Hotel.objects.count(), Room.objects.count(), Booking.objects.count())"
-```
-
-Expected output: `4 8 3`.
